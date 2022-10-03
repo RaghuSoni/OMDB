@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">OMDB App</string>
+    <string name="movies">Movies</string>
+    <string name="browse">Browse</string>
+    <string name="movieid">mid</string>
+    <string name="director">Director :</string>
+    <string name="writer">Writer :</string>
+    <string name="actor">Actors :</string>
+</resources>

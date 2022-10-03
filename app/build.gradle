@@ -1,0 +1,87 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.omdb.app"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+         dataBinding true
+     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src\\main\\res', 'src\\main\\res\\drawable-xhdpi'
+            }
+        }
+    }
+}
+
+dependencies {
+
+    // AndroidX
+    implementation "androidx.core:core-ktx:$core_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.activity:activity-compose:$activity_version"
+    //ConstraintLayout
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    //Recyclerview
+    implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:$navigation_version"
+    // Pager
+    implementation "com.google.accompanist:accompanist-pager:$google_accompanist_version"
+    // Network
+    implementation "com.squareup.retrofit2:retrofit:$squareup_retrofit2_version"
+    implementation "com.squareup.retrofit2:converter-gson:$squareup_retrofit2_version"
+    implementation "com.squareup.okhttp3:okhttp:$squareup_okhttp3_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$squareup_okhttp3_version"
+    // Paging
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    // Coil
+    implementation "io.coil-kt:coil-compose:$coil_version"
+    //splash screen
+    implementation "androidx.core:core-splashscreen:$splah_screen_version"
+
+    // Dagger Hilt
+    implementation "com.google.dagger:hilt-android:$dagger_version"
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.0'
+    implementation 'com.google.android.material:material:1.6.1'
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_version"
+    // Unit Test
+    testImplementation "junit:junit:$junit_version"
+    // UI Test
+    androidTestImplementation "androidx.test.ext:junit:$test_ext_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$test_expresso_version"
+}
