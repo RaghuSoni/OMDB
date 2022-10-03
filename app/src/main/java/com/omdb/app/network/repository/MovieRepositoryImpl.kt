@@ -49,7 +49,12 @@ class MovieRepositoryImpl @Inject constructor(
                 id = id,
                 apikey = apiKey
             )
-            emit(Response.Success(responseApi))
+            if(responseApi.response.equals("False")){
+               throw Exception()
+            }else{
+                emit(Response.Success(responseApi))
+            }
+
         } catch (e: Exception) {
             emit(Response.Failure(e))
         }

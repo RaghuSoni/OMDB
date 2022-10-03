@@ -6,4 +6,5 @@
     <string name="director">Director :</string>
     <string name="writer">Writer :</string>
     <string name="actor">Actors :</string>
+    <string name="no_data">No Data</string>
 </resources>

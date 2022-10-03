@@ -29,7 +29,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     var searchJob: Job? = null
     private val viewModel by viewModels<MainViewModel>()
-    private var moviePagerAdapter:MoviePagerAdapter? = null
+    private var moviePagerAdapter: MoviePagerAdapter? = null
+    private var defaultSearching="Fast"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +46,13 @@ class MainActivity : AppCompatActivity() {
         initSearch()
 
         searchJob = lifecycleScope.launchWhenCreated {
-            viewModel.searchMovie("fast").collectLatest {
+            viewModel.searchMovie(defaultSearching).collectLatest {
                 moviePagerAdapter?.submitData(it)
             }
+        }
+
+        binding.loadStateRetry.setOnClickListener {
+            moviePagerAdapter?.refresh()
         }
 
     }
@@ -61,23 +66,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        moviePagerAdapter= MoviePagerAdapter(MovieClickListener {
-            val intent=Intent(this@MainActivity,MovieDetailActivity::class.java)
-            intent.putExtra(getString(R.string.movieid),it.imdbID)
+        moviePagerAdapter = MoviePagerAdapter(MovieClickListener {
+            val intent = Intent(this@MainActivity, MovieDetailActivity::class.java)
+            intent.putExtra(getString(R.string.movieid), it.imdbID)
             startActivity(intent)
         })
-        val gridLayoutManager=GridLayoutManager(this,3)
-       /* gridLayoutManager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup(){
-            override fun getSpanSize(position: Int): Int {
-                if(moviePagerAdapter.snapshot().items.get(position) is MovieSearchItem){
-                    return 1
-                }else{
-                    return 3
-                }
-            }
-        })*/
+        val gridLayoutManager = GridLayoutManager(this, 3)
+        /* gridLayoutManager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup(){
+             override fun getSpanSize(position: Int): Int {
+                 if(moviePagerAdapter.snapshot().items.get(position) is MovieSearchItem){
+                     return 1
+                 }else{
+                     return 3
+                 }
+             }
+         })*/
         binding.recyclerview.apply {
-            layoutManager=gridLayoutManager
+            layoutManager = gridLayoutManager
             adapter = moviePagerAdapter?.withLoadStateFooter(
                 footer = MovieLoadStateAdapter { moviePagerAdapter?.retry() }
             )
@@ -91,6 +96,8 @@ class MainActivity : AppCompatActivity() {
                 binding.loadStateProgress.visibility = View.VISIBLE
             } else {
                 binding.loadStateProgress.visibility = View.GONE
+                binding.loadStateRetry.visibility = View.GONE
+                binding.loadStateErrorMessage.visibility = View.GONE
 
                 val errorState = when {
                     loadState.append is LoadState.Error -> loadState.append as LoadState.Error
@@ -102,7 +109,11 @@ class MainActivity : AppCompatActivity() {
                     else -> null
                 }
                 errorState?.let {
-                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                    binding.loadStateRetry.visibility = View.VISIBLE
+                    binding.loadStateErrorMessage.visibility = View.VISIBLE
+                    binding.loadStateErrorMessage.text = it.error.message
+                    binding.loadStateProgress.visibility = View.GONE
+
                 }
             }
         }
@@ -111,13 +122,24 @@ class MainActivity : AppCompatActivity() {
     private fun initSearch() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                updateSearchResult(query.toString())
+                defaultSearching=query.toString()
+                updateSearchResult(defaultSearching)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
+
+        })
+
+        binding.searchView.setOnCloseListener(object : SearchView.OnCloseListener{
+            override fun onClose(): Boolean {
+                searchJob?.cancel()
+                defaultSearching=""
+                return false
+            }
+
         })
 
     }

@@ -19,9 +19,9 @@ class MoviePagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieSearchItem> {
         return try {
+
             val nextPage = params.key ?: 1
             val moviesList = response.invoke(nextPage)
-
             val newCount = moviesList.searchList.size
             val total = moviesList.totalResults
             val itemsBefore = nextPage * Const.PAGE_SIZE
@@ -29,11 +29,17 @@ class MoviePagingSource(
 
             val prevKey = if (nextPage == 0) null else nextPage - 1
             val nextKey = if (itemsAfter == 0) null else nextPage + 1
-            LoadResult.Page(
-                data = moviesList.searchList,
-                prevKey = prevKey,
-                nextKey = nextKey
-            )
+
+            if(moviesList.response.equals("False")){
+                throw Exception("No Data Found")
+            }else{
+                LoadResult.Page(
+                    data = moviesList.searchList,
+                    prevKey = prevKey,
+                    nextKey = nextKey
+                )
+            }
+
         } catch (exception: Exception) {
             return LoadResult.Error(exception)
         }
