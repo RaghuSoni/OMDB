@@ -103,16 +103,18 @@ class MainActivity : AppCompatActivity() {
                     loadState.append is LoadState.Error -> loadState.append as LoadState.Error
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
                     loadState.refresh is LoadState.Error -> {
+                        binding.loadStateErrorMessage.text = getString(R.string.no_data)
                         binding.loadStateRetry.visibility = View.VISIBLE
                         loadState.refresh as LoadState.Error
                     }
                     else -> null
                 }
                 errorState?.let {
-                    binding.loadStateRetry.visibility = View.VISIBLE
+                   /* binding.loadStateRetry.visibility = View.VISIBLE
                     binding.loadStateErrorMessage.visibility = View.VISIBLE
                     binding.loadStateErrorMessage.text = it.error.message
-                    binding.loadStateProgress.visibility = View.GONE
+                    binding.loadStateProgress.visibility = View.GONE*/
+                  //  Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
 
                 }
             }
